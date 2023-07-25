@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research stuff</title>
+    <style href="style.css"></style>
+</head>
+<body>
+
+    <h2> The main thing !</h2>
+
+    <img src="/plot.png"> 
+    
+    <h2>Squeeze factor (r): {{rv}}</h2>
+    <h2>System Frequency (W): {{Wv}}</h2>
+    <h2>System Decay Rate (g): {{gv}}</h2>
+    
+
+
+<form method="post" action="{{url_for('update')}}" >
+    <label for="'g'">  Small gamma value [1-100]</label>
+    <input type="range" min="1" max="100" value={{g}} name="g" id="g"></input> 
+    <h5>Set at {{g}}</h5>
+    <br>
+    <label for="W">Small omega value [1-100]</label>
+    <input type="range" min="1" max="100" value={{W}} name="W" id="W"></input>
+    <h5>Set at {{W}}</h5>
+    <br>
+    <label for="r">r value [1-100] </label>
+    <input type="range" min="1" max="100" value={{r}} name="r" id="r"></input>
+    <h5>Set at {{r}}</h5>
+    
+    <br>
+
+    <button type="submit">Load</button>
+    
+
+</form>
+
+
+</body>
+</html>
