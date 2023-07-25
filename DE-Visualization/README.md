@@ -17,7 +17,7 @@
 
 After installing all needed modules you must run the `app.py` file.
 
-Open your terminal to the folded containing this code (ex: User/Downloads/DE-Visualization/)
+Open your terminal to the folded containing this code (ex: User/Downloads/DE-Visualization/DE-Visualization/)
 
 You can check where you are in the terminal using `pwd`, try running `ls` and you should see `app.py` as one of the outputs once you are in the right place!
 
