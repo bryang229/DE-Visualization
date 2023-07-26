@@ -20,7 +20,7 @@ def model(z, t, w,W,g,G,r):
        
         return dYdt
 
-def genDiff(init_conds, tspan,func_i, params = [-1] * 5): 
+def genDiff(init_conds, tspan, params = [-1] * 5): 
     param = [.1, 1.0, 1.0, .9, .1]
     i = 0
     print('called')

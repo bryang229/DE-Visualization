@@ -1,44 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Research stuff</title>
-    <style href="style.css"></style>
+    <link href="{{ url_for('static', filename='../style.css') }}" />
+    <style type="text/css">
+        #container {
+            display: grid;
+            grid-template-columns: 700px 500px;
+            grid-template-rows: 500px;
+            grid-column-gap: 10px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 150px 150px 150px;
+            grid-template-rows: 200px 200px 100px;
+            grid-row-gap: 40px;
+            grid-column-gap: 10px;
+        }
+
+        #note{
+            margin-top: 500px;
+        }
+    </style>
 </head>
+
 <body>
-
-    <h2> The main thing !</h2>
-
-    <img src="/plot.png"> 
-    
-    <h2>Squeeze factor (r): {{rv}}</h2>
-    <h2>System Frequency (W): {{Wv}}</h2>
-    <h2>System Decay Rate (g): {{gv}}</h2>
-    
+    <div id="container">
+        <div class="content">
 
 
-<form method="post" action="{{url_for('update')}}" >
-    <label for="'g'">  Small gamma value [1-100]</label>
-    <input type="range" min="1" max="100" value={{g}} name="g" id="g"></input> 
-    <h5>Set at {{g}}</h5>
-    <br>
-    <label for="W">Small omega value [1-100]</label>
-    <input type="range" min="1" max="100" value={{W}} name="W" id="W"></input>
-    <h5>Set at {{W}}</h5>
-    <br>
-    <label for="r">r value [1-100] </label>
-    <input type="range" min="1" max="100" value={{r}} name="r" id="r"></input>
-    <h5>Set at {{r}}</h5>
-    
-    <br>
 
-    <button type="submit">Load</button>
-    
+            <h2> The main thing !</h2>
 
-</form>
+            <img src="/plot.png">
 
+            <h2>Squeeze factor (r): {{rv}}</h2>
+            <h2>System Frequency (W): {{Wv}}</h2>
+            <h2>System Decay Rate (g): {{gv}}</h2>
+            <h2>Coupling factor (G): {{Gv}}</h2>
+            <h2>State Frequency (w): {{wv}}</h2>
+            <h2>Function show: {{func_i}}</h2>
+        </div>
+
+
+        <div class="content">
+            <form method="post" action="{{url_for('update')}}">
+                <div>
+                    <label for="g"> Small gamma value (g) [0-99]</label>
+                    <input type="range" min="0" max="99" value={{g}} name="g" id="g"></input>
+                    <h5>Set at {{g}} | New value: </h5>
+                    <p id='gnew'>{{g}}</p>
+                    <br>
+                </div>
+
+                <div>
+                    <label for="W">Small omega value (w) [0-99]</label>
+                    <input type="range" min="0" max="99" value={{W}} name="W" id="W"></input>
+                    <h5>Set at {{W}} | New value: </h5>
+                    <p>{{W}}</p>
+                    <br>
+                </div>
+                
+
+                <div>
+                    <label for="r">r value [0-99] </label>
+                    <input type="range" min="0" max="99" value={{r}} name="r" id="r"></input>
+                    <h5>Set at {{r}}</h5>
+                    <h5>Set at {{r}} | New value: </h5>
+                    <p id="rnew">{{r}}</p>
+                    <br>
+                </div>
+
+                <div>
+                    <label for="G">Big gamma value (G) [0-99] </label>
+                    <input type="range" min="0" max="99" value={{G}} name="G" id="G"></input>
+                    <h5>Set at {{G}}</h5>
+                    <h5>Set at {{G}} | New value: </h5>
+                    <p id="Gnew">{{G}}</p>
+                    <br>
+                </div>
+
+                <div>
+                    <label for="w">Small omega value (w) [0-99] </label>
+                    <input type="range" min="0" max="99" value={{w}} name="w" id="w"></input>
+                    <h5>Set at {{w}}</h5>
+                    <h5>Set at {{w}} | New value: </h5>
+                    <p id="wnew">{{w}}</p>
+                    <br>
+                </div>
+                <div>
+                    <label for="'tmin">Min time value (must be less than max)</label>
+                    <input type="text" name="tmin" id="tmin" value = {{tmin}}>
+                    <label for="'tmin">Max time value (must be greater than min)</label>
+                    <input type="text" name="tmax" id="tmax" value = {{tmax}} >
+                    <label for="steps">Number of steps between range (100 - 10000)</label>
+                    <input type="text" name="trang" id="trang" value={{steps}} >
+                    <br>
+                </div>
+                <div>
+                    <label for="func_i">Function index value [0-7] </label>
+                    <input type="range" min="0" max="7" value={{func_i}} name="func_i" id="func_i"></input>
+                    <h5>Set at {{func_i}}</h5>
+                    <h5>Set at {{func_i}} | New value: </h5>
+                    <p id="func_inew">{{func_i}}</p>
+                    <br>
+                </div>
+
+                <button type="submit">Load</button>
+                <!-- add new value using js -->
+
+            </form>
+        </div>
+    </div>
+    <h1 id='note'>NOTE FROM DEV: Due to the youth of this site, many feautures many be janky, if you see that your new graph query does not update try querying for it again! You may have querried before your changes could be fully loaded, or other small issues. Make sure to vocalize any issues ran into!</h1>
+    <script type="text/javascript">
+        let inputs = document.querySelectorAll('input')
+
+        const update_val = (id) => {
+            console.log(id)
+            let rangeObj = document.getElementById(id);
+            let val = parseInt(rangeObj.value);
+            let ref = document.getElementById(id + "new");
+            ref.innerText = val;
+        }
+
+
+
+        document.getElementById('g').oninput = (e) => {
+            e.preventDefault();
+            update_val('g');
+        }
+        document.getElementById('w').oninput = (e) => {
+            e.preventDefault();
+            update_val('w');
+        }
+        document.getElementById('r').oninput = (e) => {
+            e.preventDefault();
+            update_val('r');
+        }
+        document.getElementById('func_i').oninput = (e) => {
+            e.preventDefault();
+            update_val('func_i');
+        }
+        document.getElementById('W').oninput = (e) => {
+            e.preventDefault();
+            update_val('W');
+        }
+        document.getElementById('G').oninput = (e) => {
+            e.preventDefault();
+            update_val('G');
+        }
+
+
+
+    </script>
 
 </body>
+
 </html>
