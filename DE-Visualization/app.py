@@ -115,19 +115,6 @@ def plot_png():
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/plot_rt.png')
-def plot_png_rt():
-    fig = create_figure_rt()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
-
-@app.route('/plot_it.png')
-def plot_png_it():
-    fig = create_figure_it()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
 
 def create_figure():
     g, W, r, w, G, func_i, tmin, tmax, steps = loadCookies()

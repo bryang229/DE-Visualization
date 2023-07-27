@@ -23,9 +23,29 @@
             grid-column-gap: 10px;
         }
 
-        #note{
+        #note {
             margin-top: 1500px;
         }
+
+        #eqs {
+            margin-top: 100px;
+            display: grid;
+            grid-template-rows: 100px 100px 100px 100px;
+            grid-template-columns: 110px 110px 110px 110px;   
+            grid-row-gap: 30px;
+            grid-column-gap: 30px;
+        }
+
+        .func_btn {
+            border: 10px black solid;
+            width: fit-content;
+        }
+        
+        .chosen {
+            background-color: yellow;
+            opacity: 70%;
+        }
+
     </style>
 </head>
 
@@ -55,31 +75,31 @@
             <form method="post" action="{{url_for('update')}}">
                 <div>
                     <label for="g">Environment Decay rate (&gamma;)</label>
-                    <input type="text" id="g" name ="g" value={{g}}>
+                    <input type="text" id="g" name="g" value={{g}}>
                 </div>
                 <div>
                     <label for="W">Central Environment Frequency (&Omega;)</label>
-                    <input type="text" id="W" name ="W" value={{W}}>
+                    <input type="text" id="W" name="W" value={{W}}>
                 </div>
                 <div>
                     <label for="r">Squeeze factor (r)</label>
-                    <input type="text" id="r" name ="r" value={{r}}>
+                    <input type="text" id="r" name="r" value={{r}}>
                 </div>
                 <div>
                     <label for="G">Coupling factor (&Gamma;)</label>
-                    <input type="text" id="G" name ="G" value={{G}}>
+                    <input type="text" id="G" name="G" value={{G}}>
                 </div>
                 <div>
                     <label for="w">System Frequency (&omega;)</label>
-                    <input type="text" id="w" name ="w" value={{w}}>
+                    <input type="text" id="w" name="w" value={{w}}>
                 </div>
                 <div>
                     <label for="tmin">Min time value (must be less than max)</label>
-                    <input type="text" name="tmin" id="tmin" value = {{tmin}}>
+                    <input type="text" name="tmin" id="tmin" value={{tmin}}>
                     <label for="tmin">Max time value (must be greater than min)</label>
-                    <input type="text" name="tmax" id="tmax" value = {{tmax}} >
+                    <input type="text" name="tmax" id="tmax" value={{tmax}}>
                     <label for="steps">Number of steps between range (100 - 10000)</label>
-                    <input type="text" name="trang" id="trang" value={{steps}} >
+                    <input type="text" name="trang" id="trang" value={{steps}}>
                     <br>
                 </div>
                 <div>
@@ -95,13 +115,81 @@
                 <!-- add new value using js -->
 
             </form>
+            <div id="eqs">
+                <div class="func_btn chosen" id="f0">
+                    <h2>&part;<sub>t</sub>F<sup>&alpha;</sup><sub>z1</sub></h2>
+                </div>
+                <div class="func_btn" id="f1">
+                    <h2>&part;<sub>t</sub>F<sup>&alpha;</sup><sub>z2</sub></h2>
+                </div>
+                <div class="func_btn" id="f2">
+                    <h2>&part;<sub>t</sub>F<sup>&beta;</sup><sub>&omega;1</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f3">
+                    <h2>&part;<sub>t</sub>F<sup>&beta;</sup><sub>&omega;2</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f4">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&alpha; &alpha;</sup><sub>z1</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f5">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&alpha; &beta;</sup><sub>z2</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f6">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&beta; &alpha;</sup><sub>&omega;1</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f7">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&beta; &beta;</sup><sub>&omega;2</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f8">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&alpha; &gamma;</sup><sub>z1</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f9">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&alpha; &epsilon;</sup><sub>z2</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f10">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&beta; &gamma;</sup><sub>&omega;1</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f11">
+                    <h2>&part;<sub>t</sub>J<sup>&tilde;</sup><sup>&beta; &epsilon;</sup><sub>&omega;2</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f12">
+                    <h2>&part;<sub>t</sub>F<sup>&gamma;</sup><sub>z1</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f13">
+                    <h2>&part;<sub>t</sub>F<sup>&gamma;</sup><sub>z2</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f14">
+                    <h2>&part;<sub>t</sub>F<sup>&epsilon;</sup><sub>&omega;1</sub></h2>
+    
+                </div>
+                <div class="func_btn" id="f15">
+                    <h2>&part;<sub>t</sub>F<sup>&epsilon;</sup><sub>&omega;2</sub></h2>
+    
+                </div>
+    
+        </div>
         </div>
     </div>
+
     
-    
-    
-    <h2>&part;<sub>t</sub>F<sup>&alpha;</sup><sub>z1</sub></h2>
-    <h1 id='note'>NOTE FROM DEV: Due to the youth of this site, many feautures many be janky, if you see that your new graph query does not update try querying for it again! You may have querried before your changes could be fully loaded, or other small issues. Make sure to vocalize any issues ran into!</h1>
+
+
+
+    <h1 id='note'>NOTE FROM DEV: Due to the youth of this site, many feautures many be janky, if you see that your new
+        graph query does not update try querying for it again! You may have querried before your changes could be fully
+        loaded, or other small issues. Make sure to vocalize any issues ran into!</h1>
     <script type="text/javascript">
         let inputs = document.querySelectorAll('input')
 
@@ -109,8 +197,17 @@
             let rangeObj = document.getElementById(id);
             let val = parseInt(rangeObj.value);
             let ref = document.getElementById(id + "new");
-            ref.innerText = val;
+
+            document.querySelector(".chosen").classList.remove("chosen")
+            let newRef = document.getElementById("f" + rangeObj.value);
+            newRef.classList.add("chosen")
+            ref.innerHTML = newRef.innerHTML;
+
+
+
         }
+
+
 
 
 
@@ -129,6 +226,7 @@
         document.getElementById('func_i').oninput = (e) => {
             e.preventDefault();
             update_val('func_i');
+
         }
         // document.getElementById('W').oninput = (e) => {
         //     e.preventDefault();
