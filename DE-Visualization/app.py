@@ -1,8 +1,9 @@
 from flask import render_template, Flask, request, url_for, redirect, Response, flash
 
+from http import cookies as Cookie
 import pandas as pd
 import numpy as np
-from odepy import genDiff, get_val
+from odepy import genDiff, get_val, genSessionId, CoefHolder
 import matplotlib.pyplot as plt
 import matplotlib 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -11,18 +12,42 @@ matplotlib.use('Agg')
 
 import io
 
-
 app = Flask(__name__, static_folder = "/Users/bryang229/Desktop/DE-Visualization/DE-Visualization/Static")
+userCookie = Cookie.SimpleCookie()
+sessionId = genSessionId()
+
+zHolder = CoefHolder()
+
+userCookie['session'] = sessionId
+# W = .1
+# g = 1.0
+# r = .01
+# w = 1
+# G = .1
+# func_i = 0
+# tspan = [0, 100]
+# steps = 1000
 
 
-W = 1
-g = 1
-r = 1
-w = 99
-G = 99
-func_i = 0
-tspan = [0, 100]
-steps = 1000
+userCookie['W'] = .1
+userCookie['g'] = .01
+userCookie['r'] = .01
+userCookie['w'] = 1
+userCookie['G'] = 1
+userCookie['func_i'] = 0
+userCookie['tmin'] = 0
+userCookie['tmax'] = 100
+userCookie['steps'] = 1000
+
+def loadCookies():
+    global userCookie
+    temp = [float(userCookie['g'].value), float(userCookie['W'].value),
+            float(userCookie['r'].value), float(userCookie['w'].value),
+            float(userCookie['G'].value), int(userCookie['func_i'].value),
+            int(userCookie['tmin'].value), int(userCookie['tmax'].value),
+            int(userCookie['steps'].value)]
+    return temp
+
 
 
 @app.route('/update', methods = ['POST'])
@@ -58,18 +83,20 @@ def update():
     elif float(tmax_) < float(tmin_):
         flash('Make sure the max is greater than the min')
     else:
-        global g, W, r, w, G, func_i, tspan, steps
-        g = int(g_)
-        W = int(W_)
-        r = int(r_)
-        w = int(w_)
-        G = int(G_)
-        func_i = int(func_i_)
+        
+        global userCookie
+        userCookie['g'] = float(g_)
+        userCookie['W'] = float(W_)
+        userCookie['r'] = float(r_)
+        userCookie['w'] = float(w_)
+        userCookie['G'] = float(G_)
+        userCookie['func_i'] = int(func_i_)
         steps_ = int(steps_)
         steps_ = 100 if steps_ < 100 else steps_
         steps_ = 10000 if steps_ > 10000 else steps_
-        steps = steps_
-        tspan = [float(tmin_), float(tmax_)]
+        userCookie['steps'] = steps_
+        userCookie['tmin'] = int(tmin_)
+        userCookie['tmax'] = int(tmax_)
 
 
     return redirect('/')
@@ -77,15 +104,9 @@ def update():
 @app.route('/')
 @app.route('/matplot', methods = ['GET', "POST"])
 def mpl():
-    global g, W, r, w, G, func_i, tspan, steps
+    g, W, r, w, G, func_i, tmin, tmax, steps = loadCookies()
 
-    r_ = get_val(r, 0, 2, 100)
-    g_ = get_val(g, .01, 1, 100)
-    W_ = get_val(W, 0, .9, 100)
-    w_ = get_val(w, 0, 1, 100)
-    G_ = get_val(G, 0, 1,100)
-
-    return render_template('index.html', PageTitle = "Matplotlib",gv = g_, Wv = W_, rv = r_, wv = w_, Gv=G_ , G=G, w=w,g=g,W=W,r=r, func_i=func_i, tmin=tspan[0], tmax=tspan[1], steps = steps)
+    return render_template('index.html', PageTitle = "Matplotlib", G=G, w=w,g=g,W=W,r=r, func_i=func_i, tmin=tmin, tmax=tmax, steps = steps)
 
 @app.route('/plot.png')
 def plot_png():
@@ -94,26 +115,39 @@ def plot_png():
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+@app.route('/plot_rt.png')
+def plot_png_rt():
+    fig = create_figure_rt()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/plot_it.png')
+def plot_png_it():
+    fig = create_figure_it()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
 def create_figure():
-    global r, g, W, w, G, func_i, tspan, steps
+    g, W, r, w, G, func_i, tmin, tmax, steps = loadCookies()
 
-    r_ = get_val(r, 0, 2, 100)
-    g_ = get_val(g, .01, 1, 100)
-    W_ = get_val(W, 0, .9, 100)
-    w_ = get_val(w, 0, 1, 100)
-    G_ = get_val(G, 0, 1,100)
-
-    fig, ax = plt.subplots(figsize=(6,4))
+    fig, ax = plt.subplots(nrows = 3, figsize=(6,6))
     fig.patch.set_facecolor('#E8E5DA')
 
-    z = genDiff(np.array([0+0j] * 8), np.linspace(tspan[0],tspan[1],steps), [w_, W_, g_, G_, r_])
+    z = genDiff(np.array([0+0j] * 16), np.linspace(tmin,tmax,steps), [w, W, g, G, r])
 
-    ax.scatter(z[:,func_i].real, z[:,func_i].imag, c= np.linspace(.1,1,len(z[:,func_i].real)))
-    plt.title("Plot of the first function of the first set of equations")
-
+    ax[0].scatter(z[:,func_i].real, z[:,func_i].imag, c= np.linspace(.1,1,len(z[:,func_i].real)))
+    ax[0].set_title("Complex plane")
+    ax[1].plot(np.linspace(tmin, tmax, steps), z[:,func_i].real)
+    ax[1].set_title("Real vs time")
+    ax[2].plot(np.linspace(tmin, tmax, steps), z[:,func_i].imag)
+    ax[2].set_title("Imaginary vs time")
+    fig.tight_layout(pad = 2.0)
     return fig
 
 
 if (__name__ == "__main__"):
     app.debug = True
     app.run(port = 2500)
+
